@@ -10,13 +10,17 @@ namespace Rebus.Oracle
 
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = "select table_name from USER_TABLES";
+                command.CommandText = @"SELECT TABLE_NAME AS NAME FROM USER_TABLES
+UNION ALL
+SELECT VIEW_NAME AS NAME FROM USER_VIEWS
+UNION ALL
+SELECT SYNONYM_NAME AS NAME FROM USER_SYNONYMS;";
 
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        tableNames.Add(reader["table_name"].ToString());
+                        tableNames.Add(reader["NAME"].ToString());
                     }
                 }
             }
